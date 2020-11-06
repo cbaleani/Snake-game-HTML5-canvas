@@ -4,7 +4,7 @@
 
 Creation of an online game, from a step-by-step tutorial and using the languages for development of web applications: HTML, CSS, JavaScript.
 
-- GitHub Pages:
+- GitHub Pages: https://cbaleani.github.io/Snake-game-HTML5-canvas/
 
 ## Contributors
 - Carla Baleani <carlabaleani27@gmail.com>
