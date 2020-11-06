@@ -5,6 +5,7 @@ var dir = 0; // 0 <= dir <= 3 (integer)
 var pause = true;
 var player = null;
 var score = 0;
+var wall = new Array();
 
 var KEY_LEFT = 37,
 		KEY_UP = 38,
@@ -60,6 +61,13 @@ function paint(context) {
 	// Draw food
 	context.fillStyle = '#f00';
 	food.fill(context);
+
+	// Draw walls
+	context.fillStyle = '#999';
+	for (i = 0, l = wall.length; i < l; i += 1) {
+		wall[i].fill(context);
+	}
+}
 
 	// Draw score
 	context.fillText('Score: ' + score, 0, 10);
@@ -133,6 +141,15 @@ function act() {
 		food.x = random(canvas.width / 10 - 1) * 10;
 		food.y = random(canvas.height / 10 - 1) * 10;
 	}
+
+	// Wall Intersects
+	for (i = 0, l = wall.length; i < l; i += 1) {
+		// if food hits the wall, food is moved
+		if (food.intersects(wall[i])) {
+			food.x = random(canvas.width / 10 - 1) * 10;
+			food.y = random(canvas.height / 10 - 1) * 10;
+		}
+	}
 }
 
 function repaint() {
@@ -153,6 +170,12 @@ function init() {
 	// Create player and food
 	player = new Rectangle(40, 40, 10, 10);
 	food = new Rectangle(80, 80, 10, 10);
+
+	// Create walls
+	wall.push(new Rectangle(100, 50, 10, 10));
+	wall.push(new Rectangle(100, 100, 10, 10));
+	wall.push(new Rectangle(200, 50, 10, 10));
+	wall.push(new Rectangle(200, 100, 10, 10));
 
 	// Start game
 	run();
