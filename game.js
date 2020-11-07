@@ -144,7 +144,7 @@
 		context.fillText('FPS: ' + FPS, 150, 10);
 	}
 
-	function act() {
+	function act(deltaTime) {
 		if (!pause) {
 			// GameOver Reset
 			if (gameover) {
@@ -153,6 +153,7 @@
 
 			// Move Body
 			for (var i = body.length - 1; i > 0; i--) {
+				body[i].x += 120 * deltaTime; // !
 				body[i].x = body[i - 1].x;
 				body[i].y = body[i - 1].y;
 			}
@@ -259,7 +260,7 @@
 			frames = 0;
 			acumDelta -= 1;
 		}
-		act();
+		act(deltaTime);
 	}
 
 	function init() {
