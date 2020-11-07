@@ -1,10 +1,10 @@
 (function (window, undefined) {
-	'use strict'
+	'use strict';
 	var KEY_LEFT = 37,
-		KEY_UP = 38,
-		KEY_RIGHT = 39,
-		KEY_DOWN = 40,
-		KEY_ENTER = 13;
+		  KEY_UP = 38,
+		  KEY_RIGHT = 39,
+		  KEY_DOWN = 40,
+		  KEY_ENTER = 13;
 
 	var canvas = null;
 	var context = null;
@@ -64,9 +64,19 @@
 			}
 		};
 	};
+
 	function random(max) {
 		return Math.floor(Math.random() * max);
 	}
+
+	function canPlayOgg() {
+		var aud = new Audio();
+		if (aud.canPlayType('audio/ogg').replace(/no/, '')) {
+			return true;
+		} else {
+		return false;
+		}
+	};
 
 	function reset() {
 		score = 0;
@@ -238,9 +248,14 @@
 		// Load assets
 		iBody.src = 'assets/body.png';
 		iFood.src = 'assets/fruit.png';
-		aEat.src = 'assets/chomp.oga';
-		aDie.src = 'assets/dies.oga';
-
+		if (canPlayOgg()) {
+			aEat.src="assets/chomp.oga";
+			aDie.src = 'assets/dies.oga';
+			} else {
+			aEat.src="assets/chomp.m4a";
+			aDie.src = 'assets/dies.oga';
+		}
+		
 		// Create food
 		food = new Rectangle(80, 80, 10, 10);
 
