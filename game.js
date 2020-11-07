@@ -66,7 +66,7 @@
 	};
 
 	function random(max) {
-		return Math.floor(Math.random() * max);
+		return ~~(Math.random() * max);
 	}
 
 	function canPlayOgg() {
@@ -255,7 +255,7 @@
 			aEat.src="assets/chomp.m4a";
 			aDie.src = 'assets/dies.oga';
 		}
-		
+
 		// Create food
 		food = new Rectangle(80, 80, 10, 10);
 
