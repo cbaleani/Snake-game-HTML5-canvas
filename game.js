@@ -51,8 +51,19 @@
 				context.fillRect(this.x, this.y, this.width, this.height);
 			}
 		};
-	}
 
+		this.drawImage = function (context, img) {
+			if (img == null) {
+				window.console.warn('Missing parameters on function drawImage');
+			} else {
+				if (img.width) {
+				context.drawImage(img, this.x, this.y);
+				} else {
+				context.strokeRect(this.x, this.y, this.width, this.height);
+				}
+			}
+		};
+	};
 	function random(max) {
 		return Math.floor(Math.random() * max);
 	}
@@ -93,7 +104,7 @@
 		// Draw food
 		// context.fillStyle = '#f00';
 		// food.fill(context);
-		context.drawImage(iFood, food.x, food.y);
+		food.drawImage(context, iFood);
 
 		// Debug last key pressed
 		context.fillStyle = '#000';
