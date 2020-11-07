@@ -1,4 +1,5 @@
 (function (window, undefined) {
+	'use strict'
 	var KEY_LEFT = 37,
 		KEY_UP = 38,
 		KEY_RIGHT = 39,
