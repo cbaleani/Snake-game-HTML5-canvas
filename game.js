@@ -33,7 +33,7 @@
 		this.width = (width === undefined) ? 0 : width;
 		this.height = (height === undefined) ? this.width : height;
 
-		this.intersects = function (rect) {
+		Rectangle.prototype.intersects = function (rect) {
 			if (rect === undefined) {
 				window.console.warn('Missing parameters on function intersects');
 			} else {
@@ -44,7 +44,7 @@
 			}
 		};
 
-		this.fill = function (context) {
+		Rectangle.prototype.fill = function (context) {
 			if (context === undefined) {
 				window.console.warn('Missing parameters on function fill');
 			} else {
@@ -52,7 +52,7 @@
 			}
 		};
 
-		this.drawImage = function (context, img) {
+		Rectangle.prototype.drawImage = function (context, img) {
 			if (img === undefined) {
 				window.console.warn('Missing parameters on function drawImage');
 			} else {
@@ -99,7 +99,8 @@
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
 		// Draw player
-		context.fillStyle = '#115735';
+		//context.fillStyle = '#115735';
+		context.strokeStyle = '#115735';
 		for (var i = 0; i < body.length; i++) {
 			//body[i].fill(context);
 			context.drawImage(iBody, body[i].x, body[i].y);
@@ -107,6 +108,7 @@
 
 		// Draw walls
 		// context.fillStyle = '#999';
+		// context.strokeStyle = '#999';
 		// for (var i = 0; i < wall.lenght; i++) {
 		// 	wall[i].fill(context);
 		// }
@@ -114,6 +116,7 @@
 		// Draw food
 		// context.fillStyle = '#f00';
 		// food.fill(context);
+		context.strokeStyle = '#f00';
 		food.drawImage(context, iFood);
 
 		// Debug last key pressed
