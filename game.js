@@ -28,13 +28,13 @@
 	document.addEventListener('keydown', saveKey, false);
 
 	function Rectangle(x, y, width, height) {
-		this.x = (x == null) ? 0 : x;
-		this.y = (y == null) ? 0 : y;
-		this.width = (width == null) ? 0 : width;
-		this.height = (height == null) ? this.width : height;
+		this.x = (x === null) ? 0 : x;
+		this.y = (y === null) ? 0 : y;
+		this.width = (width === null) ? 0 : width;
+		this.height = (height === null) ? this.width : height;
 
 		this.intersects = function (rect) {
-			if (rect == null) {
+			if (rect === null) {
 				window.console.warn('Missing parameters on function intersects');
 			} else {
 				return (this.x < rect.x + rect.width &&
@@ -45,7 +45,7 @@
 		};
 
 		this.fill = function (context) {
-			if (context == null) {
+			if (context === null) {
 				window.console.warn('Missing parameters on function fill');
 			} else {
 				context.fillRect(this.x, this.y, this.width, this.height);
@@ -53,7 +53,7 @@
 		};
 
 		this.drawImage = function (context, img) {
-			if (img == null) {
+			if (img === null) {
 				window.console.warn('Missing parameters on function drawImage');
 			} else {
 				if (img.width) {
@@ -149,30 +149,30 @@
 			}
 
 			// Change Direction
-			if (lastKeyPress == KEY_UP && dir != 2) {
+			if (lastKeyPress === KEY_UP && dir !== 2) {
 				dir = 0;
 			}
-			if (lastKeyPress == KEY_RIGHT && dir != 3) {
+			if (lastKeyPress === KEY_RIGHT && dir !== 3) {
 				dir = 1;
 			}
-			if (lastKeyPress == KEY_DOWN && dir != 0) {
+			if (lastKeyPress === KEY_DOWN && dir !== 0) {
 				dir = 2;
 			}
-			if (lastKeyPress == KEY_LEFT && dir != 1) {
+			if (lastKeyPress === KEY_LEFT && dir !== 1) {
 				dir = 3;
 			}
 
 			// Move Head
-			if (dir == 0) {
+			if (dir === 0) {
 				body[0].y -= 10;
 			}
-			if (dir == 1) {
+			if (dir === 1) {
 				body[0].x += 10;
 			}
-			if (dir == 2) {
+			if (dir === 2) {
 				body[0].y += 10;
 			}
-			if (dir == 3) {
+			if (dir === 3) {
 				body[0].x -= 10;
 			}
 
