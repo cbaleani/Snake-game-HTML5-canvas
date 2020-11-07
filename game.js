@@ -3,9 +3,10 @@ var context = null;
 var lastKeyPress = null;
 var dir = 0; // 0 <= dir <= 3 (integer)
 var pause = true;
-var player = null;
+// var player = null;
+body = [];
 var score = 0;
-var wall = new Array();
+// var wall = [];
 var gameover = true;
 
 var KEY_LEFT = 37,
@@ -53,8 +54,13 @@ function random(max) {
 function reset() {
 	score = 0;
 	dir = 1;
-	player.x = 40;
-	player.y = 40;
+	// Snake length equal to zero at the beginning of every game
+	body.length = 0;
+	body.push(new Rectangle(40, 40, 10, 10));
+	body.push(new Rectangle(0, 0, 10, 10));
+	body.push(new Rectangle(0, 0, 10, 10));
+	// body[0].x = 40;
+	// body[0].y = 40;
 	food.x = random(canvas.width / 10 - 1) * 10;
 	food.y = random(canvas.height / 10 - 1) * 10;
 	gameover = false;
@@ -67,24 +73,26 @@ function paint(context) {
 
 	// Draw player
 	context.fillStyle = '#115735';
-	player.fill(context);
+	for (var i = 0; i < body.length; i++) {
+		body[i].fill(context);
+	}
 
 	// Draw food
 	context.fillStyle = '#f00';
 	food.fill(context);
 
 	// Draw walls
-	context.fillStyle = '#999';
-	for (i = 0, l = wall.length; i < l; i += 1) {
-		wall[i].fill(context);
-	}
+	// context.fillStyle = '#999';
+	// for (i = 0, l = wall.length; i < l; i += 1) {
+	// 	wall[i].fill(context);
+	// }
 
 	// Draw score
 	context.fillText('Score: ' + score, 0, 10);
 
 	// Debug last key pressed
 	context.fillStyle = '#000';
-	//context.fillTeplayer.xt('Last Key Press: ' + lastKeyPress, 0, 20);
+	//context.fillText('Last Key Press: ' + lastKeyPress, 0, 20);
 	
 	// Draw pause
 	if (pause) {
@@ -121,30 +129,30 @@ function act() {
 
 		//Move Rectangle
 		if (dir === 0) {
-			player.y -= 10;
+			body[0].y -= 10;
 		}
 		if (dir === 1) {
-			player.x += 10;
+			body[0].x += 10;
 		}
 		if (dir === 2) {
-			player.y += 10;
+			body[0].y += 10;
 		}
 		if (dir === 3) {
-			player.x -= 10;
+			body[0].x -= 10;
 		}
 
 		//Out Screen
-		if (player.x > canvas.width) {
-			player.x = 0;
+		if (body[0].x > canvas.width) {
+			body[0].x = 0;
 		}
-		if (player.y > canvas.height) {
-			player.y = 0;
+		if (body[0].y > canvas.height) {
+			body[0].y = 0;
 		}
-		if (player.x < 0) {
-			player.x = canvas.width;
+		if (body[0].x < 0) {
+			body[0].x = canvas.width;
 		}
-		if (player.y < 0) {
-			player.y = canvas.height;
+		if (body[0].y < 0) {
+			body[0].y = canvas.height;
 		}
 	}	
 	
@@ -155,24 +163,24 @@ function act() {
 	}
 
 	// Food Intersects
-	if (player.intersects(food)) {
+	if (body[0].intersects(food)) {
 		score += 1;
 		food.x = random(canvas.width / 10 - 1) * 10;
 		food.y = random(canvas.height / 10 - 1) * 10;
 	}
 
 	// Wall Intersects
-	for (i = 0, l = wall.length; i < l; i += 1) {
-		// if food hits a wall, food is moved
-		if (food.intersects(wall[i])) {
-			food.x = random(canvas.width / 10 - 1) * 10;
-			food.y = random(canvas.height / 10 - 1) * 10;
-		}
-		// if the player hits a wall, the game stops and it starts from the beginning
-		if (player.intersects(wall[i])) {
-			gameover = true;
-			pause = true;
-		}
+	// for (i = 0, l = wall.length; i < l; i += 1) {
+	// 	// if food hits a wall, food is moved
+	// 	if (food.intersects(wall[i])) {
+	// 		food.x = random(canvas.width / 10 - 1) * 10;
+	// 		food.y = random(canvas.height / 10 - 1) * 10;
+	// 	}
+	// 	// if the player hits a wall, the game stops and it starts from the beginning
+	// 	if (body[0].intersects(wall[i])) {
+	// 		gameover = true;
+	// 		pause = true;
+	// 	}
 	}
 }
 
@@ -196,10 +204,10 @@ function init() {
 	food = new Rectangle(80, 80, 10, 10);
 
 	// Create walls
-	wall.push(new Rectangle(100, 50, 10, 10));
-	wall.push(new Rectangle(100, 100, 10, 10));
-	wall.push(new Rectangle(200, 50, 10, 10));
-	wall.push(new Rectangle(200, 100, 10, 10));
+	// wall.push(new Rectangle(100, 50, 10, 10));
+	// wall.push(new Rectangle(100, 100, 10, 10));
+	// wall.push(new Rectangle(200, 50, 10, 10));
+	// wall.push(new Rectangle(200, 100, 10, 10));
 
 	// Start game
 	run();
