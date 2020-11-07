@@ -28,13 +28,13 @@
 	document.addEventListener('keydown', saveKey, false);
 
 	function Rectangle(x, y, width, height) {
-		this.x = (x === null) ? 0 : x;
-		this.y = (y === null) ? 0 : y;
-		this.width = (width === null) ? 0 : width;
-		this.height = (height === null) ? this.width : height;
+		this.x = (x === undefined) ? 0 : x;
+		this.y = (y === undefined) ? 0 : y;
+		this.width = (width === undefined) ? 0 : width;
+		this.height = (height === undefined) ? this.width : height;
 
 		this.intersects = function (rect) {
-			if (rect === null) {
+			if (rect === undefined) {
 				window.console.warn('Missing parameters on function intersects');
 			} else {
 				return (this.x < rect.x + rect.width &&
@@ -45,7 +45,7 @@
 		};
 
 		this.fill = function (context) {
-			if (context === null) {
+			if (context === undefined) {
 				window.console.warn('Missing parameters on function fill');
 			} else {
 				context.fillRect(this.x, this.y, this.width, this.height);
@@ -53,7 +53,7 @@
 		};
 
 		this.drawImage = function (context, img) {
-			if (img === null) {
+			if (img === undefined) {
 				window.console.warn('Missing parameters on function drawImage');
 			} else {
 				if (img.width) {
