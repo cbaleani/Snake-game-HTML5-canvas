@@ -21,6 +21,11 @@
 	var aEat = new Audio();
 	var aDie = new Audio();
 
+	var lastUpdate = 0,
+			FPS = 0,
+			frames = 0,
+			acumDelta = 0;
+
 	function saveKey(e) {
 		lastKeyPress = e.which;
 	}
@@ -136,6 +141,7 @@
 			}
 			context.textAlign = 'left';
 		}
+		context.fillText('FPS: ' + FPS, 150, 10);
 	}
 
 	function act() {
@@ -239,7 +245,20 @@
 	}
 
 	function run() {
-		setTimeout(run, 50);
+		window.requestAnimationFrame(run);
+		var now = Date.now();
+		var deltaTime = (now - lastUpdate) / 1000;
+		if (deltaTime > 1) {
+			deltaTime = 0;
+		}
+		lastUpdate = now;
+		frames += 1;
+		acumDelta += deltaTime;
+		if (acumDelta > 1) {
+			FPS = frames;
+			frames = 0;
+			acumDelta -= 1;
+		}
 		act();
 	}
 
