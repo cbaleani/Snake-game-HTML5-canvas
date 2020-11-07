@@ -6,6 +6,7 @@ var pause = true;
 var player = null;
 var score = 0;
 var wall = new Array();
+var gameover = true;
 
 var KEY_LEFT = 37,
 		KEY_UP = 38,
@@ -49,6 +50,16 @@ function random(max) {
 	return Math.floor(Math.random() * max);
 }
 
+function reset() {
+	score = 0;
+	dir = 1;
+	player.x = 40;
+	player.y = 40;
+	food.x = random(canvas.width / 10 - 1) * 10;
+	food.y = random(canvas.height / 10 - 1) * 10;
+	gameover = false;
+}
+
 function paint(context) {
 	// Clean canvas
 	context.fillStyle = '#f2f2f2';
@@ -67,7 +78,6 @@ function paint(context) {
 	for (i = 0, l = wall.length; i < l; i += 1) {
 		wall[i].fill(context);
 	}
-}
 
 	// Draw score
 	context.fillText('Score: ' + score, 0, 10);
@@ -79,14 +89,23 @@ function paint(context) {
 	// Draw pause
 	if (pause) {
 		context.textAlign = 'center';
-		context.fillText('PAUSE', 150, 75);
+		if (gameover) {
+			context.fillText('GAME OVER', 150, 75);
+		} else {
+			context.fillText('PAUSE', 150, 75);
+		}
 		context.textAlign = 'left';
 	}
 }
 
 function act() {
 	if (!pause) {
-		//Change Direction
+		// GameOver Reset
+		if (gameover) {
+			reset();
+		}
+
+		// Change Direction
 		if (lastKeyPress === KEY_UP) {
 			dir = 0;
 		}
@@ -144,10 +163,15 @@ function act() {
 
 	// Wall Intersects
 	for (i = 0, l = wall.length; i < l; i += 1) {
-		// if food hits the wall, food is moved
+		// if food hits a wall, food is moved
 		if (food.intersects(wall[i])) {
 			food.x = random(canvas.width / 10 - 1) * 10;
 			food.y = random(canvas.height / 10 - 1) * 10;
+		}
+		// if the player hits a wall, the game stops and it starts from the beginning
+		if (player.intersects(wall[i])) {
+			gameover = true;
+			pause = true;
 		}
 	}
 }
