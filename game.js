@@ -83,6 +83,16 @@
 		}
 	};
 
+	function resize() {
+		var w = window.innerWidth / canvas.width;
+		var h = window.innerHeight / canvas.height;
+		var scale = Math.min(h, w);
+		canvas.style.width = (canvas.width * scale) + 'px';
+		canvas.style.height = (canvas.height * scale) + 'px';
+	}
+
+	window.addEventListener('resize', resize, false);
+
 	function reset() {
 		score = 0;
 		dir = 1;
@@ -153,7 +163,7 @@
 
 			// Move Body
 			for (var i = body.length - 1; i > 0; i--) {
-				body[i].x += 120 * deltaTime; // !
+				// body[i].x += 120 * deltaTime; 
 				body[i].x = body[i - 1].x;
 				body[i].y = body[i - 1].y;
 			}
@@ -246,6 +256,7 @@
 	}
 
 	function run() {
+		// setTimeout(run, 50);
 		window.requestAnimationFrame(run);
 		var now = Date.now();
 		var deltaTime = (now - lastUpdate) / 1000;
