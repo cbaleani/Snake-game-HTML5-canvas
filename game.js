@@ -16,21 +16,33 @@
 	var body = [];
 	var food = null;
 	var gameover = true;
+	var fullscreen = false;
 	var iBody = new Image();
 	var iFood = new Image();
 	var aEat = new Audio();
 	var aDie = new Audio();
 
-	var lastUpdate = 0,
-			FPS = 0,
-			frames = 0,
-			acumDelta = 0;
+	// var lastUpdate = 0,
+	// 		FPS = 0,
+	// 		frames = 0,
+	// 		acumDelta = 0;
+	var buffer = null;
+	var bufferContext = null;
+	var bufferScale = 1;
+	var bufferOffsetX = 0;
+	var bufferOffsetY = 0;
 
-	function saveKey(e) {
+	document.addEventListener('keydown', function (e) {
+		if (e.which >= 37 && e.which <= 40) {
+			e.preventDefault();
+		}
 		lastKeyPress = e.which;
-	}
-
-	document.addEventListener('keydown', saveKey, false);
+	}, false);
+	
+	// function saveKey(e) {
+	// 	lastKeyPress = e.which;
+	// }
+	//document.addEventListener('keydown', saveKey, false);
 
 	function Rectangle(x, y, width, height) {
 		this.x = (x === undefined) ? 0 : x;
@@ -62,36 +74,42 @@
 				window.console.warn('Missing parameters on function drawImage');
 			} else {
 				if (img.width) {
-				context.drawImage(img, this.x, this.y);
+					context.drawImage(img, this.x, this.y);
 				} else {
 				context.strokeRect(this.x, this.y, this.width, this.height);
 				}
 			}
-		};
+		}
 	};
 
 	function random(max) {
 		return ~~(Math.random() * max);
 	}
 
-	function canPlayOgg() {
-		var aud = new Audio();
-		if (aud.canPlayType('audio/ogg').replace(/no/, '')) {
-			return true;
-		} else {
-		return false;
-		}
-	};
+	// function canPlayOgg() {
+	// 	var aud = new Audio();
+	// 	if (aud.canPlayType('audio/ogg').replace(/no/, '')) {
+	// 		return true;
+	// 	} else {
+	// 	return false;
+	// 	}
+	// };
 
 	function resize() {
-		var w = window.innerWidth / canvas.width;
-		var h = window.innerHeight / canvas.height;
-		var scale = Math.min(h, w);
-		canvas.style.width = (canvas.width * scale) + 'px';
-		canvas.style.height = (canvas.height * scale) + 'px';
-	}
+		// var w = window.innerWidth / canvas.width;
+		// var h = window.innerHeight / canvas.height;
+		// var scale = Math.min(h, w);
+		// canvas.style.width = (canvas.width * scale) + 'px';
+		// canvas.style.height = (canvas.height * scale) + 'px';
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 
-	window.addEventListener('resize', resize, false);
+		var w = window.innerWidth / buffer.width;
+		var h = window.innerHeight / buffer.height;
+		bufferScale = Math.min(h, w);
+		bufferOffsetX = (canvas.width - (buffer.width * bufferScale)) / 2;
+		bufferOffsetY = (canvas.height - (buffer.height * bufferScale)) / 2;
+	}
 
 	function reset() {
 		score = 0;
@@ -103,22 +121,26 @@
 		body.push(new Rectangle(0, 0, 10, 10));
 		// body[0].x = 40;
 		// body[0].y = 40;
-		food.x = random(canvas.width / 10 - 1) * 10;
-		food.y = random(canvas.height / 10 - 1) * 10;
+		// food.x = random(canvas.width / 10 - 1) * 10;
+		food.x = random(buffer.width / 10 - 1) * 10;
+		// food.y = random(canvas.height / 10 - 1) * 10;
+		food.y = random(buffer.height / 10 - 1) * 10;
 		gameover = false;
 	}
 
 	function paint(context) {
 		// Clean canvas
 		context.fillStyle = '#f2f2f2';
-		context.fillRect(0, 0, canvas.width, canvas.height);
+		// context.fillRect(0, 0, canvas.width, canvas.height);
+		context.fillRect(0, 0, buffer.width, buffer.height);
 
 		// Draw player
 		//context.fillStyle = '#115735';
 		context.strokeStyle = '#115735';
 		for (var i = 0; i < body.length; i++) {
-			//body[i].fill(context);
-			context.drawImage(iBody, body[i].x, body[i].y);
+			// body[i].fill(context);
+			// context.drawImage(iBody, body[i].x, body[i].y);
+			body[i].drawImage(context, iBody);
 		}
 
 		// Draw walls
@@ -134,12 +156,13 @@
 		context.strokeStyle = '#f00';
 		food.drawImage(context, iFood);
 
-		// Debug last key pressed
-		context.fillStyle = '#000';
-		//context.fillText('Last Key Press: ' + lastKeyPress, 0, 20);
-
 		// Draw score
+		context.fillStyle = '#000';
 		context.fillText('Score: ' + score, 0, 10);
+
+		// Debug last key pressed
+		// context.fillStyle = '#000';
+		//context.fillText('Last Key Press: ' + lastKeyPress, 0, 20);
 		
 		// Draw pause
 		if (pause) {
@@ -151,10 +174,10 @@
 			}
 			context.textAlign = 'left';
 		}
-		context.fillText('FPS: ' + FPS, 150, 10);
+		// context.fillText('FPS: ' + FPS, 150, 10);
 	}
 
-	function act(deltaTime) {
+	function act() {
 		if (!pause) {
 			// GameOver Reset
 			if (gameover) {
@@ -163,7 +186,6 @@
 
 			// Move Body
 			for (var i = body.length - 1; i > 0; i--) {
-				// body[i].x += 120 * deltaTime; 
 				body[i].x = body[i - 1].x;
 				body[i].y = body[i - 1].y;
 			}
@@ -184,15 +206,19 @@
 
 			// Move Head
 			if (dir === 0) {
+				// body[0].y -= 600 * deltaTime;
 				body[0].y -= 10;
 			}
 			if (dir === 1) {
+				// body[0].x += 600 * deltaTime;
 				body[0].x += 10;
 			}
 			if (dir === 2) {
+				// body[0].y += 600 * deltaTime;
 				body[0].y += 10;
 			}
 			if (dir === 3) {
+				// body[0].x -= 600 * deltaTime;
 				body[0].x -= 10;
 			}
 
@@ -223,6 +249,16 @@
 			// 		pause = true;
 			// 	}
 			// }
+
+			// Food Intersects
+			if (body[0].intersects(food)) {
+				// body.push(new Rectangle(food.x, food.y, 10, 10));
+				body.push(new Rectangle(0, 0, 10, 10));
+				score += 1;
+				food.x = random(buffer.width / 10 - 1) * 10;
+				food.y = random(buffer.height / 10 - 1) * 10;
+				aEat.play();
+			}
 			
 			// Body Intersects
 			for (var i = 2; i < body.length; i ++) {
@@ -231,15 +267,6 @@
 					pause = true;
 					aDie.play();
 				}
-			}
-
-			// Food Intersects
-			if (body[0].intersects(food)) {
-				body.push(new Rectangle(food.x, food.y, 10, 10));
-				score += 1;
-				food.x = random(canvas.width / 10 - 1) * 10;
-				food.y = random(canvas.height / 10 - 1) * 10;
-				aEat.play();
 			}
 		}
 
@@ -251,44 +278,65 @@
 	}
 
 	function repaint() {
-		window.requestAnimationFrame(repaint);
-		paint(context);
+		window.requestAnimationFrame(repaint);	
+		// paint(context);
+		paint(bufferContext);
+		context.fillStyle = '#000';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.imageSmoothingEnabled = false;
+		context.webkitImageSmoothingEnabled = false;
+		context.mozImageSmoothingEnabled = false;
+		context.msImageSmoothingEnabled = false;
+		context.oImageSmoothingEnabled = false;
+		// context.drawImage(buffer, 0, 0, canvas.width, canvas.height);
+		context.drawImage(buffer, bufferOffsetX, bufferOffsetY, buffer.width * bufferScale, buffer.height * bufferScale);
 	}
 
 	function run() {
-		// setTimeout(run, 50);
-		window.requestAnimationFrame(run);
-		var now = Date.now();
-		var deltaTime = (now - lastUpdate) / 1000;
-		if (deltaTime > 1) {
-			deltaTime = 0;
-		}
-		lastUpdate = now;
-		frames += 1;
-		acumDelta += deltaTime;
-		if (acumDelta > 1) {
-			FPS = frames;
-			frames = 0;
-			acumDelta -= 1;
-		}
-		act(deltaTime);
+		setTimeout(run, 50);
+		act();
+		// window.requestAnimationFrame(run);
+		// var now = Date.now();
+		// var deltaTime = (now - lastUpdate) / 1000;
+		// if (deltaTime > 1) {
+		// 	deltaTime = 0;
+		// }
+		// lastUpdate = now;
+		// frames += 1;
+		// acumDelta += deltaTime;
+		// if (acumDelta > 1) {
+		// 	FPS = frames;
+		// 	frames = 0;
+		// 	acumDelta -= 1;
+		// }
+		// act(deltaTime);
 	}
 
 	function init() {
 		// Get canvas an context
 		canvas = document.getElementById('canvas');
 		context = canvas.getContext('2d');
+		canvas.width = 600;
+		canvas.height = 300;
+
+		// Load buffer
+		buffer = document.createElement('canvas');
+		bufferContext = buffer.getContext('2d');
+		buffer.width = 300;
+		buffer.height = 150;
 
 		// Load assets
 		iBody.src = 'assets/body.png';
 		iFood.src = 'assets/fruit.png';
-		if (canPlayOgg()) {
-			aEat.src="assets/chomp.oga";
-			aDie.src = 'assets/dies.oga';
-			} else {
-			aEat.src="assets/chomp.m4a";
-			aDie.src = 'assets/dies.oga';
-		}
+		aEat.src = 'assets/chomp.oga';
+		aDie.src = 'assets/dies.oga';
+		// if (canPlayOgg()) {
+		// 	aEat.src="assets/chomp.oga";
+		// 	aDie.src = 'assets/dies.oga';
+		// 	} else {
+		// 	aEat.src="assets/chomp.m4a";
+		// 	aDie.src = 'assets/dies.oga';
+		// }
 
 		// Create food
 		food = new Rectangle(80, 80, 10, 10);
@@ -300,9 +348,11 @@
 		// wall.push(new Rectangle(200, 100, 10, 10));
 
 		// Start game
+		resize();
 		run();
 		repaint();
 	}
 
 	window.addEventListener('load', init, false);
+	window.addEventListener('resize', resize, false);
 }(window));
