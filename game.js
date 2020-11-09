@@ -94,7 +94,7 @@
 	Scene.prototype = {
 		constructor: Scene,
 		load: function () {},
-		paint: function (ctx) {},
+		paint: function (context) {},
 		act: function () {}
 	};
 
@@ -355,11 +355,11 @@
 
 	mainScene.paint = function(context) {
 		// Clean canvas
-		context.fillStyle = '#030';
+		context.fillStyle = '#f2f2f2';
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
 		// Draw title
-		context.fillStyle = '#fff';
+		context.fillStyle = '#000';
 		context.textAlign = 'center';
 		context.fillText('SNAKE', 150, 60);
 		context.fillText('Press Enter', 150, 90);
@@ -390,7 +390,7 @@
 
 	gameScene.paint = function (context) {
 		// Clean canvas
-		context.fillStyle = '#030';
+		context.fillStyle = '#f2f2f2';
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
 		// Draw player
@@ -410,7 +410,7 @@
 		food.drawImage(context, iFood);
 
 		// Draw score
-		context.fillStyle = '#fff';
+		context.fillStyle = '#000';
 		context.textAlign = 'left';
 		context.fillText('Score: ' + score, 0, 10);
 		
