@@ -25,6 +25,10 @@
 	var scenes = [];
 	var mainScene = null;
 	var gameScene = null;
+
+	var highscores = [];
+	var posHighscore = 10;
+	var highscoresScene = null;
 	
 	// var lastUpdate = 0,
 	// 		FPS = 0,
@@ -298,6 +302,18 @@
 	// 	}
 	// }
 
+	function addHighscore(score) {
+		posHighscore = 0;
+		while (highscores[posHighscore] > score && posHighscore < highscores.length) {
+				posHighscore += 1;
+		}
+		highscores.splice(posHighscore, 0, score);
+		if (highscores.length > 10) {
+			highscores.length = 10;
+		}
+		localStorage.highscores = highscores.join(',');
+	}
+
 	function repaint() {
 		window.requestAnimationFrame(repaint);	
 		if (scenes.length) {
@@ -345,6 +361,11 @@
 		// wall.push(new Rectangle(200, 50, 10, 10));
 		// wall.push(new Rectangle(200, 100, 10, 10));
 
+		// Load saved highscores
+		if (localStorage.highscores) {
+			highscores = localStorage.highscores.split(',');
+		}
+
 		// Start game
 		run();
 		repaint();
@@ -368,7 +389,7 @@
 	mainScene.act = function() {
 		// Load next scene
 		if (lastKeyPress === KEY_ENTER) {
-			loadScene(gameScene);
+			loadScene(highscoresScene);
 			lastKeyPress = null;
 		}
 	};
@@ -432,7 +453,7 @@
 		if (!pause) {
 				// GameOver Reset
 				if (gameover) {
-						loadScene(mainScene);
+					loadScene(highscoresScene);
 				}
 
 				// Move Body
@@ -498,6 +519,7 @@
 					gameover = true;
 					pause = true;
 					aDie.play();
+					addHighscore(score);
 				}
 			}
 
@@ -518,6 +540,38 @@
 		// Pause/Unpause
 		if (lastKeyPress === KEY_ENTER) {
 			pause = !pause;
+			lastKeyPress = null;
+		}
+	};
+
+	// Highscore Scene
+	highscoresScene = new Scene();
+
+	highscoresScene.paint = function (context) {
+		// Clean canvas
+		context.fillStyle = '#030';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+
+		// Draw title
+		context.fillStyle = '#fff';
+		context.textAlign = 'center';
+		context.fillText('HIGH SCORES', 150, 30);
+		
+		// Draw high scores
+		context.textAlign = 'right';
+		for (var i = 0; i < highscores.length; i ++) {
+			if (i === posHighscore) {
+				context.fillText('*' + highscores[i], 180, 40 + i * 10);
+			} else {
+				context.fillText(highscores[i], 180, 40 + i * 10);
+			}
+		}
+	};
+
+	highscoresScene.act = function () {
+		// Load next scene
+		if(lastKeyPress === KEY_ENTER) {
+			loadScene(gameScene);
 			lastKeyPress = null;
 		}
 	};
