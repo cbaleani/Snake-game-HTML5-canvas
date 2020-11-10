@@ -20,6 +20,7 @@
 	var iFood = new Image();
 	var aEat = new Audio();
 	var aDie = new Audio();
+	var iNewFruit = new Image();
 
 	var currentScene = 0;
 	var scenes = [];
@@ -29,6 +30,7 @@
 	var highscores = [];
 	var posHighscore = 10;
 	var highscoresScene = null;
+	var newFruit = null;
 	
 	// var lastUpdate = 0,
 	// 		FPS = 0,
@@ -155,7 +157,7 @@
 
 	// function paint(context) {
 	// 	// Clean canvas
-	// 	context.fillStyle = '#f2f2f2';
+	// 	context.fillStyle = '#fff';
 	// 	// context.fillRect(0, 0, canvas.width, canvas.height);
 	// 	context.fillRect(0, 0, buffer.width, buffer.height);
 
@@ -342,6 +344,7 @@
 		// Load assets
 		iBody.src = 'assets/body.png';
 		iFood.src = 'assets/fruit.png';
+		iNewFruit.src = 'assets/new-fruit.jpg';
 		aEat.src = 'assets/chomp.oga';
 		aDie.src = 'assets/dies.oga';
 		// if (canPlayOgg()) {
@@ -354,6 +357,9 @@
 
 		// Create food
 		food = new Rectangle(80, 80, 10, 10);
+
+		// Create newFruit
+		newFruit = new Rectangle(60, 60, 10, 10);
 
 		// Create walls
 		// wall.push(new Rectangle(100, 50, 10, 10));
@@ -406,6 +412,8 @@
 		body.push(new Rectangle(0, 0, 10, 10));
 		food.x = random(canvas.width / 10 - 1) * 10;
 		food.y = random(canvas.height / 10 - 1) * 10;
+		newFruit.x = random(canvas.width / 10 - 1) * 10;
+		newFruit.y = random(canvas.height / 10 - 1) * 10;
 		gameover = false;
 	};
 
@@ -430,6 +438,10 @@
 		context.strokeStyle = '#f00';
 		food.drawImage(context, iFood);
 
+		// Draw newFruit
+	    context.strokeStyle = '#ff0';
+	    newFruit.drawImage(context, iNewFruit);
+
 		// Draw score
 		context.fillStyle = '#000';
 		context.textAlign = 'left';
@@ -437,7 +449,7 @@
 		
 		// Debug last key pressed
 		//ctx.fillText('Last Press: '+lastPress,0,20);
-		
+
 		// Draw pause
 		if (pause) {
 				context.textAlign = 'center';
@@ -451,17 +463,17 @@
 
 	gameScene.act = function() {
 		if (!pause) {
-				// GameOver Reset
-				if (gameover) {
-					loadScene(highscoresScene);
-				}
+			// GameOver Reset
+			if (gameover) {
+				loadScene(highscoresScene);
+			}
 
-				// Move Body
+			// Move Body
 			for (var i = body.length - 1; i > 0; i--) {
 				body[i].x = body[i - 1].x;
 				body[i].y = body[i - 1].y;
 			}
-
+		
 			// Change Direction
 			if (lastKeyPress === KEY_UP && dir !== 2) {
 				dir = 0;
@@ -511,6 +523,18 @@
 				food.x = random(canvas.width / 10 - 1) * 10;
 				food.y = random(canvas.height / 10 - 1) * 10;
 				aEat.play();
+			}
+
+			// newFruit Intersects
+			if (body[0].intersects(newFruit)) {
+				score += 2;
+				aEat.play();
+				newFruit.x = random((canvas.width) * 10);
+				newFruit.y = random((canvas.height) * 10); // With this I try to choose a position outside the canvas
+				setTimeout(function newFruitDiplay(){
+					newFruit.x = random(canvas.width / 10 - 1) * 10;
+					newFruit.y = random(canvas.height / 10 - 1) * 10;
+				}, 5000);
 			}
 
 			// Body Intersects
@@ -575,6 +599,6 @@
 			lastKeyPress = null;
 		}
 	};
-	
+
 	window.addEventListener('load', init, false);
 }(window));
