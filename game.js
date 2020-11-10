@@ -304,6 +304,17 @@
 	// 	}
 	// }
 
+	function sendScore(score) {
+		fetch(`https://jsonplaceholder.typicode.com/?score=${score}`)
+		.then(function(response) {
+			// console.log(response.status);
+			console.log('Score sent successfully');
+		})
+		.catch(function(err) {
+			console.log('Error trying to send the score');
+		})
+	}
+
 	function addHighscore(score) {
 		posHighscore = 0;
 		while (highscores[posHighscore] > score && posHighscore < highscores.length) {
@@ -523,6 +534,7 @@
 				food.x = random(canvas.width / 10 - 1) * 10;
 				food.y = random(canvas.height / 10 - 1) * 10;
 				aEat.play();
+				sendScore(score);
 			}
 
 			// newFruit Intersects
@@ -535,6 +547,7 @@
 					newFruit.x = random(canvas.width / 10 - 1) * 10;
 					newFruit.y = random(canvas.height / 10 - 1) * 10;
 				}, 5000);
+				sendScore(score);
 			}
 
 			// Body Intersects
